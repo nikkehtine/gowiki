@@ -14,6 +14,8 @@ type Page struct {
 	Body  []byte
 }
 
+var templates = template.Must(template.ParseFiles("templates/edit.html", "templates/view.html"))
+
 // Saves the page to a file
 func (p *Page) save() error {
 	filename := p.Title + ".txt"
@@ -62,12 +64,7 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func renderTemplate(w http.ResponseWriter, templ string, p *Page) {
-	t, err := template.ParseFiles("templates/" + templ + ".html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	err = t.Execute(w, p)
+	err := templates.ExecuteTemplate(w, templ+".html", p)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
