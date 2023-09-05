@@ -1,6 +1,9 @@
 package main
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
 type Page struct {
 	Title string
@@ -23,4 +26,9 @@ func loadPage(title string) (*Page, error) {
 	return &Page{title, body}, nil
 }
 
-func main() {}
+func main() {
+	p1 := &Page{Title: "TestPage", Body: []byte("This is a sample page.")}
+	p1.save()
+	p2, _ := loadPage("TestPage")
+	fmt.Println(string(p2.Body))
+}
