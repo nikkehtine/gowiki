@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -72,8 +74,11 @@ func renderTemplate(w http.ResponseWriter, templ string, p *Page) {
 }
 
 func main() {
+	port := flag.Int("port", 8080, "Specify a port")
+	flag.Parse()
 	http.HandleFunc("/view/", viewHandler)
 	http.HandleFunc("/edit/", editHandler)
 	http.HandleFunc("/save/", saveHandler)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	portHandle := fmt.Sprintf(":%d", *port)
+	log.Fatal(http.ListenAndServe(portHandle, nil))
 }
