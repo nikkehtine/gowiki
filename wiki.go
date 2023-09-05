@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"html/template"
@@ -33,15 +32,6 @@ func loadPage(title string) (*Page, error) {
 		return nil, err
 	}
 	return &Page{title, body}, nil
-}
-
-func getTitle(w http.ResponseWriter, r *http.Request) (string, error) {
-	m := validPath.FindStringSubmatch(r.URL.Path)
-	if m == nil {
-		http.NotFound(w, r)
-		return "", errors.New("invalid page title")
-	}
-	return m[2], nil
 }
 
 func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
