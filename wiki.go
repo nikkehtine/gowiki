@@ -1,12 +1,14 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 )
 
 type Page struct {
@@ -15,6 +17,7 @@ type Page struct {
 }
 
 var templates = template.Must(template.ParseFiles("templates/edit.html", "templates/view.html"))
+var validPath = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
 
 // Saves the page to a file
 func (p *Page) save() error {
@@ -30,6 +33,15 @@ func loadPage(title string) (*Page, error) {
 		return nil, err
 	}
 	return &Page{title, body}, nil
+}
+
+func getTitle(w http.ResponseWriter, r *http.Request) (string, error) {
+	m := validPath.FindStringSubmatch(r.URL.Path)
+	if m == nil {
+		http.NotFound(w, r)
+		return "", errors.New("invalid page title")
+	}
+	return m[2], nil
 }
 
 func viewHandler(w http.ResponseWriter, r *http.Request) {
