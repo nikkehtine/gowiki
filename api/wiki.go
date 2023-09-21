@@ -87,14 +87,20 @@ func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.Handl
 	}
 }
 
-func main() {
-	port := flag.String("port", "8080", "Specify a port")
-	flag.Parse()
-
+func Handler(port string) {
 	http.HandleFunc("/view/", makeHandler(viewHandler))
 	http.HandleFunc("/edit/", makeHandler(editHandler))
 	http.HandleFunc("/save/", makeHandler(saveHandler))
 
-	fmt.Printf("Starting server on port %s\n", *port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", *port), nil))
+	if port == "" {
+		port = "8080"
+	}
+	fmt.Printf("Starting server on port %s\n", port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
+}
+
+func main() {
+	port := flag.String("port", "8080", "Specify a port")
+	flag.Parse()
+	Handler(*port)
 }
