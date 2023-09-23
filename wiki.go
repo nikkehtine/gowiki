@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"html/template"
 	"log"
@@ -92,15 +91,14 @@ func Handler(port string) {
 	http.HandleFunc("/edit/", makeHandler(editHandler))
 	http.HandleFunc("/save/", makeHandler(saveHandler))
 
-	if port == "" {
-		port = "8080"
-	}
 	fmt.Printf("Starting server on port %s\n", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
 }
 
 func main() {
-	port := flag.String("port", "8080", "Specify a port")
-	flag.Parse()
-	Handler(*port)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+	Handler(port)
 }
